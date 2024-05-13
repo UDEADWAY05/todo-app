@@ -1,5 +1,6 @@
 import { checkAuth, refresh } from './ducks/auth/thunk';
 import { ErrorResponse, isSuccessResponse, Response } from "./types/response";
+import { ITodo } from './types/todo';
 
 export interface Tokens {
   accessToken?: string,
@@ -9,6 +10,35 @@ export interface Tokens {
 class Api {
   accessToken = localStorage.getItem('access') || undefined;
   refreshToken = localStorage.getItem('refresh') || undefined;
+
+  async fetch(url: string, config?: RequestInit) {
+    return fetch(url, {
+      ...config,
+      headers: {
+        ...config?.headers,
+        'content-type': 'application/json',
+        authorization: `Bearer ${this.accessToken}`
+      }
+    }).then(res => res.json())
+  }
+
+  async getTodos(): Promise<Response<ITodo[]>> {
+    const response = await this.fetch('http://localhost:3142/todos')
+
+    return response;
+  };
+
+  async CreateTodo(title: string): Promise<Response<ITodo>> {
+    const response = await this.fetch(
+      'http://localhost:3142/todos',
+      {
+        method: "POST",
+        body: JSON.stringify({ title })
+      }
+    )
+
+    return response;
+  };
 
   async login(body: {login: string, password: string}) {
     const data: Response<Tokens> = await fetch(
