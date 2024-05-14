@@ -28,7 +28,7 @@ class Api {
     return response;
   };
 
-  async CreateTodo(title: string): Promise<Response<ITodo>> {
+  async createTodo(title: string): Promise<Response<ITodo>> {
     const response = await this.fetch(
       'http://localhost:3142/todos',
       {
@@ -39,6 +39,29 @@ class Api {
 
     return response;
   };
+
+  async updateTodo(todo: ITodo): Promise<Response<ITodo>> {
+    const response = await this.fetch(
+      `http://localhost:3142/todos/${todo.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(todo)
+      }
+    )
+
+    return response;
+  }
+
+  async deleteTodo(id: ITodo['id']): Promise<Response<ITodo[]>> {
+    const response = await this.fetch(
+      `http://localhost:3142/todos/${id}`,
+      {
+        method: "DELETE",
+      }
+    )
+
+    return response;
+  }
 
   async login(body: {login: string, password: string}) {
     const data: Response<Tokens> = await fetch(

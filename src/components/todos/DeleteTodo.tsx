@@ -1,3 +1,4 @@
+import { todoStore } from "../../store/todoStore";
 import { ITodo } from "../../types/todo";
 
 interface IDeleteTodoProps {
@@ -6,7 +7,7 @@ interface IDeleteTodoProps {
 
 export const DeleteTodo = ({ todoId }: IDeleteTodoProps) => {
     const onDeleteTodo = async () => {
-        // deleteTodo(todoId);
+        todoStore.delete(todoId);
     }
 
     return (

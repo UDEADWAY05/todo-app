@@ -13,13 +13,27 @@ export const todoStore = makeAutoObservable({
     };
   },
   *create(title: string) {
-    
+    const result: Response<ITodo> = yield api.createTodo(title)
+
+    if (isSuccessResponse(result)) {
+      todoStore.todo.push(result.data)
+    }
   },
   *update(todo: ITodo) {
+    const result: Response<ITodo> = yield api.updateTodo(todo)
 
+    if (isSuccessResponse(result)) {
+      todoStore.todo = todoStore.todo.map(
+        todo => todo.id === result.data.id ? result.data : todo
+      )
+    }
   },
   *delete(id: ITodo['id']) {
+    const result: Response<ITodo[]> = yield api.deleteTodo(id)
 
+    if (isSuccessResponse(result)) {
+      todoStore.todo = result.data;
+    }
   }
 
 })
