@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ITodo } from "../../types/todo";
 import { Logout } from "../auth/Logout";
 import { CreateTodo } from "./CreateTodo";
 import { Todo } from "./Todo";
 import { EditTodo } from "./EditTodo";
-import { useGetTodosQuery } from "../../ducks/todo";
+import { todoStore } from "../../store/todoStore";
 
 export const Todos = () => {
     const [create, setCreate] = useState(true);
     const [id, setId] = useState('');
-    const todoData = useGetTodosQuery()
-    const todos: ITodo[] = todoData.data?.success ? todoData.data.data : []
-    console.log(todos)
+    const todos: ITodo[] = todoStore.todo
+
+    useEffect(() => {
+      todoStore.get()
+    }, [])
+  
     const onEditHandler = (todoId: ITodo['id']) => {
         setCreate(false);
         setId(todoId);

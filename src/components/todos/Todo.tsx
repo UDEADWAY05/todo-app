@@ -1,3 +1,5 @@
+import { observer } from "mobx-react-lite";
+import { todoStore } from "../../store/todoStore";
 import { ITodo } from "../../types/todo";
 import { DeleteTodo } from "./DeleteTodo";
 
@@ -6,8 +8,12 @@ interface ITodoProps {
     onEditHandler: (id: ITodo['id']) => void;
 }
 
-export const Todo = ({ todo, onEditHandler }: ITodoProps) => {
+export const Todo = observer(({ todo, onEditHandler }: ITodoProps) => {
     const onChangeCheck = async () => {
+      todoStore.update({
+        ...todo,
+        completed: !todo.completed,
+      })  
     }
 
     return (
@@ -27,4 +33,4 @@ export const Todo = ({ todo, onEditHandler }: ITodoProps) => {
             </div>
         </div>
     );
-}
+})

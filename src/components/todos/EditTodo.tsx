@@ -1,42 +1,42 @@
 import { useState } from "react";
 import { ITodo } from "../../types/todo";
-import { useGetTodosQuery } from "../../ducks/todo";
+import { todoStore } from "../../store/todoStore";
+import { observer } from "mobx-react-lite";
 
 interface IEditTodoProps {
     todoId: ITodo['id'];
     successfulEdit: () => void;
 }
 
-export const EditTodo = ({ todoId, successfulEdit }: IEditTodoProps) => {
+export const EditTodo = observer(({ todoId, successfulEdit }: IEditTodoProps) => {
     const [err, setErr] = useState('');
-    const todoData = useGetTodosQuery()
-    const todos: ITodo[] = todoData.data?.success ? todoData.data.data : []
+    const todos: ITodo[] = todoStore.todo
     const currentTodo = todos.find(todo => todo.id === todoId);
     const [input, setInput] = useState(currentTodo?.title || '');
 
     const onEditTodo: React.FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
 
-        // if (!currentTodo) {
-        //     return;
-        // }
+        if (!currentTodo) {
+            return;
+        }
 
-        // if (input === '') {
-        //     setErr('Please add valid todo!');
-        //     return;
-        // }
+        if (input === '') {
+            setErr('Please add valid todo!');
+            return;
+        }
 
-        // if (input.length > 25) {
-        //     setErr('Todo must be less then 25 characters!');
-        //     return;
-        // }
+        if (input.length > 25) {
+            setErr('Todo must be less then 25 characters!');
+            return;
+        }
 
-        // await editTodo({
-        //     ...currentTodo,
-        //     title: input
-        // })
+        await todoStore.update({
+            ...currentTodo,
+            title: input
+        })
 
-        // successfulEdit();
+        successfulEdit();
     }
 
     return (
@@ -54,4 +54,4 @@ export const EditTodo = ({ todoId, successfulEdit }: IEditTodoProps) => {
             </form>
         </section>
     );
-}
+})

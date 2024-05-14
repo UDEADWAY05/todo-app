@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useCreateTodoMutation } from '../../ducks/todo';
+import { todoStore } from '../../store/todoStore';
 
 export const CreateTodo = () => {
     const [err, setErr] = useState('');
     const [input, setInput] = useState('');
-    const [createTodo] = useCreateTodoMutation()
   
     const onCreateTodo: React.FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
@@ -20,7 +19,7 @@ export const CreateTodo = () => {
         }
 
         try {
-          await createTodo(input);
+          await todoStore.create(input);
           setInput('');
         } catch (error) {
           setErr('Something goes wrong');
